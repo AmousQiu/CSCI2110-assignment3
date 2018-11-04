@@ -17,7 +17,6 @@ public class HuffmanTree {
         char letter;//the letter in pair
         double freq;//the frequency of this letter
         Pair p = null;
-        boolean flag = true;//used to judge if there is already a team created
         //input from the file stats
         while (inputFile.hasNext()) {
             letter = inputFile.next().charAt(0);
@@ -28,8 +27,6 @@ public class HuffmanTree {
             //S.add(newT);
             S.add(0, newT);
         }
-        inputFile.close();
-        System.out.println(S.get(0).getData());
         while (!S.isEmpty()) {
             if (T.isEmpty()) {
                 A = S.get(0);
@@ -48,7 +45,6 @@ public class HuffmanTree {
                     B = S.get(0);
                     S.remove(0);
                 }
-
             }
             BinaryTree P = new BinaryTree();
             Pair root = new Pair('&', A.getData().getProb() + B.getData().getProb());
@@ -69,16 +65,60 @@ public class HuffmanTree {
             P.attachRight(B);
             T.add(P);
         }
+        //finish build tree
+
         String result[] = findEncoding(T.get(0));
+        System.out.println("Which file do you want to transfer?");
+        String transform = "";
+        String filename1 = keyboard.nextLine();
+
+        file = new File(filename1);
+        inputFile = new Scanner(file);
+        while (inputFile.hasNextLine()) {
+            String line = inputFile.nextLine();//read the file line by line
+            char[] linec = line.toCharArray();//convert the string to char array
+            for (int i = 0; i < linec.length; i++) {
+                if(linec[i]==' '){
+                    transform+=" ";
+                }
+                else {
+                    byte ascii = (byte) linec[i];
+                    ascii = (byte) (ascii - 65);
+                    transform += result[ascii];
+                }
+            }transform+="\n";
+        }
+        inputFile.close();
+
         File writename = new File("Encode.txt"); // 相对路径，如果没有则要建立一个新的output。txt文件
         writename.createNewFile(); // create new file;
         BufferedWriter out = new BufferedWriter(new FileWriter(writename));
-        for (int i = 0; i < result.length; i++) {
-            out.write(result[0]);
-        }
+        out.write(transform);
+        //for (int i = 0; i < result.length; i++) {
+        //    out.write(result[0]);
+        // }
         out.flush();
         out.close();
+
+        Byte num;
+        ArrayList<Byte> nList = new ArrayList<>();
+        char trans[]=transform.toCharArray();
+        for(int i=0;i<trans.length;i++){
+            num=(byte)trans[i];
+            nList.add(num);
+        }
+        inputFile.close();
+        writename = new File("Decode.txt");
+        writename.createNewFile();
+        out = new BufferedWriter(new FileWriter(writename));
+        String decode = findDecoding(nList, T.get(0));
+        out.write(decode);
+        out.flush();
+        out.close();
+
     }
+
+
 
     public static void findEncoding(BinaryTree<Pair> t, String[] a, String prefix) {
         if (t.getLeft() == null && t.getRight() == null) {
@@ -89,23 +129,6 @@ public class HuffmanTree {
         }
     }
 
-    public static String findDecoding(ArrayList<Integer> alist, BinaryTree<Pair> t) {
-        String result = "";
-        while (!alist.isEmpty()) {
-            while (t.getRight() != null || t.getLeft() != null) {
-                if (alist.get(0) == 0) {
-                    alist.remove(0);
-                    t.getLeft();
-                } else if (alist.get(0) == 1) {
-                    alist.remove(0);
-                    t.getRight();
-                }
-            }
-            result += t.getData().getLetter();
-        }
-        return result;
-    }
-
 
     public static String[] findEncoding(BinaryTree<Pair> t) {
         String[] result = new String[28];
@@ -114,4 +137,7 @@ public class HuffmanTree {
         findEncoding(t, result, "");
         return result;
     }
+
+    public static String findDecoding(ArrayList<Byte> alist, BinaryTree<Pair> t) {
+
 }
