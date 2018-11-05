@@ -78,16 +78,27 @@ public class HuffmanTree {
             String line = inputFile.nextLine();//read the file line by line
             char[] linec = line.toCharArray();//convert the string to char array
             for (int i = 0; i < linec.length; i++) {
+<<<<<<< HEAD
                 if (linec[i] == ' ') {
                     transform += " ";
                 }
                 else if((linec[i] >= 'A' && linec[i] <= 'Z')) {
+=======
+                if(linec[i]==' '){
+                    transform+=" ";
+                }
+                else {
+>>>>>>> 03f7335167204c227a000b751835249db804db8f
                     byte ascii = (byte) linec[i];
                     ascii = (byte) (ascii - 65);
                     transform += result[ascii];
                 }
+<<<<<<< HEAD
             }
             transform += "\n";
+=======
+            }transform+="\n";
+>>>>>>> 03f7335167204c227a000b751835249db804db8f
         }
         inputFile.close();
 
@@ -103,6 +114,7 @@ public class HuffmanTree {
 
         Byte num;
         ArrayList<Byte> nList = new ArrayList<>();
+<<<<<<< HEAD
         char trans[] = transform.toCharArray();
         for (int i = 0; i < trans.length; i++) {
             num = (byte) trans[i];
@@ -139,18 +151,34 @@ public class HuffmanTree {
                 }
             }
             decodeLine += "\n";
+=======
+        char trans[]=transform.toCharArray();
+        for(int i=0;i<trans.length;i++){
+            num=(byte)trans[i];
+            nList.add(num);
+>>>>>>> 03f7335167204c227a000b751835249db804db8f
         }
         inputFile.close();
         writename = new File("Decode.txt");
         writename.createNewFile();
         out = new BufferedWriter(new FileWriter(writename));
+<<<<<<< HEAD
         //String decode = findDecoding(nList, T.get(0));
         out.write(decodeLine);
+=======
+        String decode = findDecoding(nList, T.get(0));
+        out.write(decode);
+>>>>>>> 03f7335167204c227a000b751835249db804db8f
         out.flush();
         out.close();
+
     }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 03f7335167204c227a000b751835249db804db8f
     public static void findEncoding(BinaryTree<Pair> t, String[] a, String prefix) {
         if (t.getLeft() == null && t.getRight() == null) {
             a[((byte) (t.getData().getLetter())) - 65] = prefix;
@@ -168,4 +196,7 @@ public class HuffmanTree {
         findEncoding(t, result, "");
         return result;
     }
+
+    public static String findDecoding(ArrayList<Byte> alist, BinaryTree<Pair> t) {
+
 }
