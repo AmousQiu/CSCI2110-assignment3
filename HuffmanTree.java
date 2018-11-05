@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class HuffmanTree {
@@ -18,22 +17,24 @@ public class HuffmanTree {
         double freq;//the frequency of this letter
         Pair p = null;
         //input from the file stats
+        //build the huffman tree
         while (inputFile.hasNext()) {
             letter = inputFile.next().charAt(0);
             freq = inputFile.nextDouble();
             Pair nPair = new Pair(letter, freq);
             BinaryTree newT = new BinaryTree();
-            newT.setData(nPair);
-            //S.add(newT);
-            S.add(0, newT);
+            newT.setData(nPair);//set the data of the new binary tree
+            S.add(0, newT);//put the new pair to the beginning of the arraylist
         }
-        while (!S.isEmpty()) {
-            if (T.isEmpty()) {
-                A = S.get(0);
+        //start to add the thing to huffman tree
+        while (!S.isEmpty()) {//keep adding until arraylist S is empty
+            if (T.isEmpty()) {//while the arraylist T is empty
+                A = S.get(0);//set the two minimum object of S as the A,B tree
                 B = S.get(1);
-                S.remove(0);
+                S.remove(0);//remove A and B from the Arraylist
                 S.remove(0);
             } else if (!T.isEmpty()) {
+                //if T arrylist is not empty , get the smallest weight tree from S and T ,and then remove them from the
                 if (S.get(0).getData().getProb() < T.get(0).getData().getProb()) {
                     A = S.get(0);
                     S.remove(0);
@@ -46,14 +47,15 @@ public class HuffmanTree {
                     S.remove(0);
                 }
             }
+            //create a new tree which is the huffman tree store the pairs
             BinaryTree P = new BinaryTree();
             Pair root = new Pair('&', A.getData().getProb() + B.getData().getProb());
-            P.makeRoot(root);
-            P.attachLeft(A);
-            P.attachRight(B);
-            T.add(P);
+            P.makeRoot(root);//make the root with a default letter &
+            P.attachLeft(A);//give it a left child
+            P.attachRight(B);//give it a right child
+            T.add(P);//add this to the arraylist
         }
-        while (T.size() > 1) {
+        while (T.size() > 1) {//we just want this arraylist have one tree,so we do a combbination here
             A = T.get(0);
             B = T.get(1);
             T.remove(0);
@@ -71,45 +73,35 @@ public class HuffmanTree {
         System.out.println("Which file do you want to transfer?");
         String transform = "";
         String filename1 = keyboard.nextLine();
-
+//Now we start to process the pokemon text
         file = new File(filename1);
         inputFile = new Scanner(file);
         while (inputFile.hasNextLine()) {
             String line = inputFile.nextLine();//read the file line by line
             char[] linec = line.toCharArray();//convert the string to char array
             for (int i = 0; i < linec.length; i++) {
-                if (linec[i] == ' ') {
+                if (linec[i] == ' ') {//keep the spaces as they were
                     transform += " ";
-                }
-                else if((linec[i] >= 'A' && linec[i] <= 'Z')) {
+                } else if ((linec[i] >= 'A' && linec[i] <= 'Z')) {//avoid there is strange letters inside the text and cause indexOutOfBound error
                     byte ascii = (byte) linec[i];
-                    ascii = (byte) (ascii - 65);
-                    transform += result[ascii];
+                    ascii = (byte) (ascii - 65);//transfer the ascii code to the position of the letter in the alpha table
+                    transform += result[ascii];//add it to the output string
                 }
             }
             transform += "\n";
         }
-        inputFile.close();
+        inputFile.close();//finish read the text
 
-        File writename = new File("Encode.txt"); // 相对路径，如果没有则要建立一个新的output。txt文件
+        File writename = new File("Encode.txt"); // create a new encode txt
         writename.createNewFile(); // create new file;
         BufferedWriter out = new BufferedWriter(new FileWriter(writename));
         out.write(transform);
-        //for (int i = 0; i < result.length; i++) {
-        //    out.write(result[0]);
-        // }
         out.flush();
         out.close();
 
-        Byte num;
-        ArrayList<Byte> nList = new ArrayList<>();
-        char trans[] = transform.toCharArray();
-        for (int i = 0; i < trans.length; i++) {
-            num = (byte) trans[i];
-            nList.add(num);
-        }
+        //the decode part
         System.out.println("Which file do you want to transfer?");
-        transform = "";
+        transform = "";//clear the output string since I'm using the same variable
         String filename2 = keyboard.nextLine();
 
         file = new File(filename2);
@@ -117,22 +109,17 @@ public class HuffmanTree {
         String decodeLetter = "";
         String decodeLine = "";
         while (inputFile.hasNextLine()) {
-
             String line = inputFile.nextLine();//read the file line by line
             char[] linec = line.toCharArray();//convert the string to char array
             for (int i = 0; i < linec.length; i++) {
-
-                System.out.println(linec[i]);
                 if (linec[i] == ' ') {
-                    decodeLine += " ";
-                }
-                else {
+                    decodeLine += " ";//space default
+                } else {
                     decodeLetter += linec[i];
                     for (int j = 0; j < result.length; j++) {
-                        if (decodeLetter.equals(result[j])) {
-                            char newLetter = (char) (j + 65);
+                        if (decodeLetter.equals(result[j])) {//get the position of the letter in the result array
+                            char newLetter = (char) (j + 65);//turn it back to the ascii code
                             decodeLine += newLetter;
-                            System.out.println(decodeLetter);
                             decodeLetter = "";
                         }
                     }
@@ -162,9 +149,7 @@ public class HuffmanTree {
 
 
     public static String[] findEncoding(BinaryTree<Pair> t) {
-        String[] result = new String[28];
-        result[26] = " ";
-        result[27] = "/n";
+        String[] result = new String[26];
         findEncoding(t, result, "");
         return result;
     }
